@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DevSecOps Assignment</title>
+  <style>
+    body {
+      background-color: white;
+      text-align: center;
+      padding-top: 50px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to DevSecOps Assignment</h1>
+  <button onclick="changeColor()">Click Me</button>
+
+  <script>
+    function changeColor() {
+      const colors = ["lightblue", "lightgreen", "lightpink", "yellow"];
+      document.body.style.backgroundColor =
+        colors[Math.floor(Math.random() * colors.length)];
+    }
+  </script>
+</body>
+</html>
