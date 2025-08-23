@@ -1,0 +1,24 @@
+{
+  "name": "devsecops-intern-assignment",
+  "version": "1.0.0",
+  "description": "This is a simple web application for demonstrating a CI/CD pipeline with security integration.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Muzamil-Yasin/devsecops-intern-assignment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Muzamil-Yasin/devsecops-intern-assignment/issues"
+  },
+  "homepage": "https://github.com/Muzamil-Yasin/devsecops-intern-assignment#readme",
+  "devDependencies": {
+    "eslint": "^9.34.0",
+    "eslint-plugin-security": "^3.0.1"
+  }
+}
