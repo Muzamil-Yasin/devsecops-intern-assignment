@@ -34,3 +34,8 @@ jobs:
     - name: Run npm audit for dependency vulnerabilities
       run: |
         npm audit --audit-level=moderate
+    
+    - name: Run Security Scan
+      run: |
+          npm install eslint-plugin-security --save-dev
+          npx eslint . --ext .js
