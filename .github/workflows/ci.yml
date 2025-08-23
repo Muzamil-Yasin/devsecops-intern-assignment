@@ -1,27 +1,36 @@
-name: DevSecOps CI
+name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18' 
 
-      - name: Install dependencies
-        run: npm install
+    
+    - name: Install dependencies
+      run: npm install
 
-      - name: Run ESLint with security plugin
-        run: |
-          npx eslint . --ext .js,.html
+   
+    - name: Run ESLint  (Syntax + security checks)
+      run: |
+        npm install eslint --save-dev
+        npx eslint . --ext .js
+    
+    - name: Run npm audit for dependency vulnerabilities
+      run: |
+        npm audit --audit-level=moderate
