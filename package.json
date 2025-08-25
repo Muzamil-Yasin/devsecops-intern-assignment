@@ -4,7 +4,8 @@
   "description": "This is a simple web application for demonstrating a CI/CD pipeline with security integration.",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint . --ext .js --max-warnings=0",
+    "lint:security": "eslint . --ext .js --plugin security",
     "test": "jest"
   },
   "repository": {
@@ -26,4 +27,6 @@
     "jest": "^30.0.5",
     "supertest": "^7.1.4"
   }
+
+ 
 }

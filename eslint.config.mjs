@@ -7,13 +7,12 @@ import { defineConfig } from "eslint/config";
 
 export default defineConfig([
   {
-    files: ["**/*.{js,mjs,cjs}"],
+    files: ["/*.{js,mjs,cjs}"],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "module",
       globals: {
         ...globals.node,
-        // Add other globals if needed
       }
     },
     plugins: {
@@ -23,6 +22,15 @@ export default defineConfig([
     rules: {
       ...js.configs.recommended.rules,
       ...security.configs.recommended.rules
+    }
+  },
+  {
+    // for  Jest test files
+    files: ["tests//*.js"],
+    languageOptions: {
+      globals: {
+        ...globals.jest
+      }
     }
   }
 ]);
