@@ -13,17 +13,57 @@ This is a simple web application for demonstrating a CI/CD pipeline with securit
    git clone https://github.com/Muzamil-Yasin/devsecops-intern-assignment.git
    cd devsecops-intern-assignment
 
-Steps to Run the Project Locally:
-1: Download and install the latest Node.js version on your system (Windows, Mac, or Linux)
-2: Install Project Dependencies 
-   Navigate to the project folder and install all required packages ( npm install )
-3: Run ESLint for Code Quality Check 
-   Make sure the following script exists in package.json under "scripts" ("lint": "eslint .") and then run "npm run lint"
-4: Run Security Lint Check
-   Ensure this script exists in package.json (""lint:security": "eslint --plugin security/recommended .") 
-   and then npm run lint:security
-5: Without yml we can run server using "node index.js/nodemon index.js" 
-6: To check vulnerabilities after pushing to github(npm audit --audit-level=moderate) also for fixing vulnerabilities(npm audit fix)
+## 🚀 Steps to Run the Project Locally
+
+1. **Download and Install Node.js**  
+   - Install the latest version of Node.js on your system (Windows, Mac, or Linux).  
+
+2. **Install Project Dependencies**  
+   - Navigate to the project folder.  
+   - Run:  
+     ```bash
+     npm install
+     ```
+
+3. **Run ESLint for Code Quality Check**  
+   - Ensure this script exists in `package.json` under `"scripts"`:  
+     ```json
+     "lint": "eslint ."
+     ```
+   - Then run:  
+     ```bash
+     npm run lint
+     ```
+
+4. **Run Security Lint Check**  
+   - Ensure this script exists in `package.json`:  
+     ```json
+     "lint:security": "eslint --plugin security/recommended ."
+     ```
+   - Then run:  
+     ```bash
+     npm run lint:security
+     ```
+
+5. **Run the Server (Without YAML)**  
+   - You can start the server using:  
+     ```bash
+     node index.js
+     ```
+     or  
+     ```bash
+     nodemon index.js
+     ```
+
+6. **Check and Fix Vulnerabilities**  
+   - After pushing to GitHub, check vulnerabilities:  
+     ```bash
+     npm audit --audit-level=moderate
+     ```
+   - To fix vulnerabilities automatically:  
+     ```bash
+     npm audit fix
+     ```
 
 
 
