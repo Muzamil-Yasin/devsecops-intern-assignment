@@ -62,3 +62,7 @@ jobs:
 
       - name: Run npm audit for dependency vulnerabilities
         run: npm audit --audit-level=moderate
+        
+      - name: Run Build
+        run: npm run build
+    
