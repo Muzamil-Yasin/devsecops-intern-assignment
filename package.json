@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "eslint . --ext .js --max-warnings=0",
     "lint:security": "eslint . --ext .js --plugin security",
-    "test": "jest"
+    "test": "jest",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,4 @@
     "jest": "^30.0.5",
     "supertest": "^7.1.4"
   }
-
- 
 }
