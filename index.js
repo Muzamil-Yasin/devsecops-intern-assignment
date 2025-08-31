@@ -8,7 +8,14 @@ const server = http.createServer((req, res) => {
       <html>
         <body>
           <h1>Hello World!</h1>
-          <button onclick="document.body.style.backgroundColor='yellow'">Change Color</button>
+          <button id="colorBtn">Change Color</button>
+
+          <script>
+            document.getElementById("colorBtn").addEventListener("click", () => {
+              const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+              document.body.style.backgroundColor = randomColor;
+            });
+          </script>
         </body>
       </html>
     `);
