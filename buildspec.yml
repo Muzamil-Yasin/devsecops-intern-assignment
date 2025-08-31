@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 637423405167.dkr.ecr.us-east-1.amazonaws.com
+  build:
+    commands:
+      - echo Build Docker image...
+      - docker build -t my-app .
+      - docker tag my-app:latest 637423405167.dkr.ecr.us-east-1.amazonaws.com/surge-repo:latest
+  post_build:
+    commands:
+      - echo Push Docker image to ECR...
+      - docker push 637423405167.dkr.ecr.us-east-1.amazonaws.com/surge-repo:latest
