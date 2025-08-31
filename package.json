@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --ext .js --max-warnings=0",
-    "lint:security": "eslint . --ext .js --plugin security",
-    "test": "jest",
-    "start": "node index.js"
+  "lint:security": "eslint . --ext .js --plugin security",
+  "test": "jest",
+  "start": "node index.js",
+  "build": "echo \"No build step required\""
+  
   },
   "repository": {
     "type": "git",
