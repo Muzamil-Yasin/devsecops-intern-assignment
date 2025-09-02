@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source: .
+    destination: /home/ec2-user/devsecops-intern-assignment
+hooks:
+  BeforeInstall:
+    - location: scripts/stop.sh
+      timeout: 300
+      runas: ec2-user
+  AfterInstall:
+    - location: scripts/start.sh
+      timeout: 600
+      runas: ec2-user
+  ValidateService:
+    - location: scripts/health.sh
+      timeout: 300
+      runas: ec2-user
