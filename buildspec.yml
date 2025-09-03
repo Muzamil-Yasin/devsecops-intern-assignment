@@ -4,13 +4,15 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 637423405167.dkr.ecr.us-east-1.amazonaws.com
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $(echo $REPOSITORY_URI | cut -d'/' -f1)
   build:
     commands:
-      - echo Build Docker image...
+      - echo Building Docker image...
       - docker build -t my-app .
-      - docker tag my-app:latest 637423405167.dkr.ecr.us-east-1.amazonaws.com/surge-repo:latest
+      - echo Tagging image with $REPOSITORY_URI:latest
+      - docker tag my-app:latest $REPOSITORY_URI:latest
   post_build:
     commands:
-      - echo Push Docker image to ECR...
-      - docker push 637423405167.dkr.ecr.us-east-1.amazonaws.com/surge-repo:latest
+      - echo Pushing Docker image to ECR...
+      - docker push $REPOSITORY_URI:latest
+      - echo Build completed on `date`
