@@ -3,7 +3,6 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $(echo $REPOSITORY_URI | cut -d'/' -f1)
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $(echo $REPOSITORY_URI | cut -d'/' -f1)
   build:
@@ -16,10 +15,10 @@ phases:
     commands:
       - echo Pushing Docker image to ECR...
       - docker push $REPOSITORY_URI:latest
-      - echo Writing imagedefinitions.json for deployment...
+      - echo Writing imagedefinitions.json...
+      - printf '[{"name":"app","imageUri":"%s:latest"}]' $REPOSITORY_URI > imagedefinitions.json
       - echo Build completed on `date`
-      
 
-artifacts:
-  files:
-    - imagedefinitions.json
+  artifacts:
+    files:
+      - imagedefinitions.json
