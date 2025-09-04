@@ -1,24 +1,28 @@
 version: 0.2
 
+env:
+  variables:
+    APP_NAME: my-node-app
+
 phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
+      - echo $REPOSITORY_URI
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $(echo $REPOSITORY_URI | cut -d'/' -f1)
   build:
     commands:
       - echo Building Docker image...
-      - docker build -t my-app .
+      - docker build -t $APP_NAME .
       - echo Tagging image with $REPOSITORY_URI:latest
-      - docker tag my-app:latest $REPOSITORY_URI:latest
+      - docker tag $APP_NAME:latest $REPOSITORY_URI:latest
   post_build:
     commands:
       - echo Pushing Docker image to ECR...
       - docker push $REPOSITORY_URI:latest
       - echo Writing imagedefinitions.json...
-      - printf '[{"name":"app","imageUri":"%s:latest"}]' $REPOSITORY_URI > imagedefinitions.json
+      - echo '[{"name":"'$APP_NAME'","imageUri":"'$REPOSITORY_URI':latest"}]' > imagedefinitions.json
       - echo Build completed on date
-
 artifacts:
-  files:
-    - imagedefinitions.json
+    files:
+      - imagedefinitions.json
