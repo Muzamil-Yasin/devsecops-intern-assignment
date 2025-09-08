@@ -16,6 +16,8 @@ phases:
       - docker build -t $APP_NAME .
       - echo Tagging image with $REPOSITORY_URI:latest
       - docker tag $APP_NAME:latest $REPOSITORY_URI:latest
+      - echo "Exporting repository URI..."
+      - echo $REPOSITORY_URI > repository.txt
   post_build:
     commands:
       - echo Pushing Docker image to ECR...
@@ -28,3 +30,4 @@ artifacts:
       - imagedefinitions.json
       - appspec.yml
       - scripts/**/*
+      - repository.txt
