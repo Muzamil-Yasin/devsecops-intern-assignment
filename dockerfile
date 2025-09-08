@@ -1,5 +1,6 @@
-# Step 1: Use Node.js image from Docker Hub
-FROM node:18
+# Step 1: Use Node.js image from aws ecr public repo
+FROM public.ecr.aws/docker/library/node:18
+
 
 # Step 2: Set working directory inside the container
 WORKDIR /app
