@@ -7,7 +7,7 @@ const server = http.createServer((req, res) => {
     res.end(`
       <html>
         <body>
-          <h1>Version 1!</h1>
+          <h1>Hello World!</h1>
           <button id="colorBtn">Change Color</button>
 
           <script>
