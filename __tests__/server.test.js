@@ -14,7 +14,7 @@ describe('Basic Node.js HTTP Server', () => {
 
     // check if HTML contains the Hello World header
     expect(res.text).toContain('<h1>Hello World!</h1>');
-    expect(res.text).toContain("document.body.style.backgroundColor='yellow'");
+    expect(res.text).toContain('document.body.style.backgroundColor = "yellow";');
 
   });
 
