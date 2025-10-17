@@ -25,5 +25,3 @@ describe('Basic Node.js HTTP Server', () => {
     expect(res.text).toBe('Page not found');
   });
 });
-
-// test
