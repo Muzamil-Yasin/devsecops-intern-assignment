@@ -3,8 +3,7 @@ version: 0.2
 env:
   variables:
     APP_NAME: my-node-app
-    AWS_REGION: us-east-1  
-    ECR_REPO_URI: <will come from CodeBuild environment variable>
+    AWS_REGION: us-east-1  # You can leave this or hardcode in commands
 
 phases:
   pre_build:
@@ -30,3 +29,4 @@ artifacts:
     - imagedefinitions.json
     - appspec.yml
     - scripts/**/*
+    
