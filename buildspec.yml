@@ -3,29 +3,30 @@ version: 0.2
 env:
   variables:
     APP_NAME: my-node-app
+    AWS_REGION: us-east-1  
+    ECR_REPO_URI: <will come from CodeBuild environment variable>
 
 phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - echo $REPOSITORY_URI
-      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $(echo $REPOSITORY_URI | cut -d'/' -f1)
+      - echo $ECR_REPO_URI
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URI
   build:
     commands:
       - echo Building Docker image...
       - docker build -t $APP_NAME .
-      - echo Tagging image with $REPOSITORY_URI:latest
-      - docker tag $APP_NAME:latest $REPOSITORY_URI:latest
-      - echo "Exporting repository URI..."
+      - echo Tagging image with $ECR_REPO_URI:latest
+      - docker tag $APP_NAME:latest $ECR_REPO_URI:latest
   post_build:
     commands:
       - echo Pushing Docker image to ECR...
-      - docker push $REPOSITORY_URI:latest
+      - docker push $ECR_REPO_URI:latest
       - echo Writing imagedefinitions.json...
-      - echo '[{"name":"'$APP_NAME'","imageUri":"'$REPOSITORY_URI':latest"}]' > imagedefinitions.json
-      - echo Build completed on date
+      - echo '[{"name":"'$APP_NAME'","imageUri":"'$ECR_REPO_URI':latest"}]' > imagedefinitions.json
+      - echo Build completed on `date`
 artifacts:
-    files:
-      - imagedefinitions.json
-      - appspec.yml
-      - scripts/**/*
+  files:
+    - imagedefinitions.json
+    - appspec.yml
+    - scripts/**/*
