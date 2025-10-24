@@ -4,6 +4,11 @@
 resource "aws_s3_bucket" "artifact_bucket" {
   bucket = "${var.pipeline_name}-artifacts"
 }
+resource "aws_s3_bucket_acl" "artifact_bucket_acl" {
+  bucket = aws_s3_bucket.artifact_bucket.id
+  acl    = "private"
+}
+
 
 # ------------------------
 # IAM Role for CodePipeline
