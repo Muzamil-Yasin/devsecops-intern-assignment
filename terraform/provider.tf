@@ -1,5 +1,22 @@
-variable "aws_region" {
-  description = "AWS region to deploy resources"
-  type        = string
-  default     = "us-east-1"
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.70.0" # ✅ Use the latest available 5.x version
+    }
+
+    github = {
+      source  = "integrations/github"
+      version = "~> 6.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+provider "github" {
+  token = var.github_oauth_token
+  owner = "Muzamil-Yasin"
 }
