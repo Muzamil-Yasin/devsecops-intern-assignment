@@ -1,7 +1,7 @@
 # ===========================================================
 # CodeBuild Project Configuration
 # Builds and pushes Docker images from GitHub
-# ===========================================================
+
 
 resource "aws_codebuild_project" "cicd_build_project" {
   name         = "CI-CD-Application-Build"
