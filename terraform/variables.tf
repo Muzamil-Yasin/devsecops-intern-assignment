@@ -2,23 +2,19 @@
 # Terraform Variables for CI/CD Pipeline
 # ===========================================================
 
-# GitHub Personal Access Token for OAuth authentication
+# --------------------------
+# GitHub Configuration
+# --------------------------
 variable "github_oauth_token" {
-  description = "GitHub Personal Access Token for OAuth"
+  description = "GitHub Personal Access Token for OAuth authentication"
   type        = string
   sensitive   = true
 }
 
-# CodePipeline configuration
-variable "pipeline_name" {
-  description = "Name of the CodePipeline"
-  default     = "end-to-end-cicd-pipeline"
-}
-
-# GitHub repository info
 variable "repository_name" {
   description = "GitHub repository name"
   default     = "devsecops-intern-assignment"
+
 }
 
 variable "branch_name" {
@@ -26,19 +22,19 @@ variable "branch_name" {
   default     = "main"
 }
 
-# CodeBuild project
+# --------------------------
+# CodePipeline Configuration
+# --------------------------
+variable "pipeline_name" {
+  description = "Name of the CodePipeline"
+  default     = "CI-CD-Application-Pipeline"
+}
+
+# --------------------------
+# CodeBuild Configuration
+# --------------------------
 variable "codebuild_project_name" {
   description = "Name of the CodeBuild project"
-  default     = "ci-cd-application-build"
+  default     = "CI-CD-Application-Build"
 }
 
-# ECS cluster and service (if needed in future)
-variable "ecs_cluster_name" {
-  description = "ECS cluster name for deployment"
-  default     = "my-ecs-cluster"
-}
-
-variable "ecs_service_name" {
-  description = "ECS service name for deployment"
-  default     = "my-ecs-service"
-}

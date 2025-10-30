@@ -41,11 +41,14 @@ resource "aws_codedeploy_deployment_group" "ec2_deployment_group" {
     }
   }
 
-  # Rollback settings
+  # Enable Auto Rollback
   auto_rollback_configuration {
     enabled = true
     events  = ["DEPLOYMENT_FAILURE"]
   }
+
+  # Optional: wait for EC2 instances to be in a healthy state before deployment
+
 
   tags = {
     Name        = "EC2DeploymentGroup"

@@ -1,8 +1,3 @@
-# ===========================================================
-# CodeBuild Project Configuration
-# Builds and pushes Docker images from GitHub
-
-
 resource "aws_codebuild_project" "cicd_build_project" {
   name         = "CI-CD-Application-Build"
   description  = "CodeBuild project for building and pushing Docker images from GitHub"
@@ -17,6 +12,22 @@ resource "aws_codebuild_project" "cicd_build_project" {
     image           = "aws/codebuild/standard:7.0"
     type            = "LINUX_CONTAINER"
     privileged_mode = true # Required for Docker builds
+
+    # Environment variables for Docker build and push
+    environment_variable {
+      name  = "AWS_REGION"
+      value = "us-east-1"
+    }
+
+    environment_variable {
+      name  = "ECR_REPO_URI"
+      value = "052869605945.dkr.ecr.us-east-1.amazonaws.com/my-repo" # actual repo URI
+    }
+
+    environment_variable {
+      name  = "APP_NAME"
+      value = "my-node-app" # matches your buildspec
+    }
   }
 
   source {

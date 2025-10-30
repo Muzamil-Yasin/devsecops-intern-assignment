@@ -1,143 +1,203 @@
-# ===========================================================
-# IAM ROLES - CI/CD PIPELINE (CodeBuild, CodePipeline, CodeDeploy)
-# ===========================================================
 
-# -----------------------------
-# IAM ROLE: CodeBuild
-# -----------------------------
+
+# IAM Role for CodeBuild
 resource "aws_iam_role" "codebuild_service_role" {
-  name = "CodeBuildServiceRole"
+  name = "codebuild-service-role"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow"
+        Effect = "Allow",
         Principal = {
           Service = "codebuild.amazonaws.com"
-        }
+        },
         Action = "sts:AssumeRole"
       }
     ]
   })
-
-  tags = {
-    Name        = "CodeBuildServiceRole"
-    Project     = "End-to-End CI/CD Pipeline"
-    ManagedBy   = "Terraform"
-    Environment = "Development"
-    Owner       = "Muzamil Yasin"
-    Department  = "DevSecOps"
-  }
 }
 
-# Attach managed policies for CodeBuild
-resource "aws_iam_role_policy_attachment" "codebuild_attach_ecr_poweruser" {
-  role       = aws_iam_role.codebuild_service_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
-}
+# IAM Policy for CodeBuild permissions
+resource "aws_iam_policy" "codebuild_policy" {
+  name        = "codebuild-policy"
+  description = "Policy for CodeBuild to access S3, ECR, CloudWatch Logs, and CodePipeline"
 
-resource "aws_iam_role_policy_attachment" "codebuild_attach_developer_access" {
-  role       = aws_iam_role.codebuild_service_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess"
-}
-
-# -----------------------------
-# IAM ROLE: CodePipeline
-# -----------------------------
-resource "aws_iam_role" "codepipeline_service_role" {
-  name = "CodePipelineServiceRole"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+  policy = jsonencode({
+    Version = "2012-10-17",
     Statement = [
+      # S3 permissions
       {
-        Effect = "Allow"
-        Principal = {
-          Service = "codepipeline.amazonaws.com"
-        }
-        Action = "sts:AssumeRole"
+        Effect   = "Allow",
+        Action   = ["s3:GetObject", "s3:PutObject", "s3:GetBucketLocation", "s3:ListBucket"],
+        Resource = "*"
+      },
+      # ECR permissions
+      {
+        Effect = "Allow",
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:CompleteLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:InitiateLayerUpload",
+          "ecr:PutImage"
+        ],
+        Resource = "*"
+      },
+      # CloudWatch Logs permissions
+      {
+        Effect = "Allow",
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Resource = "*"
+      },
+      # CodePipeline permissions
+      {
+        Effect = "Allow",
+        Action = [
+          "codepipeline:PutJobSuccessResult",
+          "codepipeline:PutJobFailureResult"
+        ],
+        Resource = "*"
       }
     ]
   })
-
-  tags = {
-    Name           = "CodePipelineServiceRole"
-    Project        = "End-to-End CI/CD Pipeline"
-    Environment    = "Development"
-    ManagedBy      = "Terraform"
-    Owner          = "Muzamil Yasin"
-    Department     = "DevSecOps"
-    Infrastructure = "Automated"
-  }
 }
 
-# Attach managed policies for CodePipeline
-resource "aws_iam_role_policy_attachment" "codepipeline_attach_full_access" {
-  role       = aws_iam_role.codepipeline_service_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSCodePipelineFullAccess"
+# Attach the policy to the IAM role
+resource "aws_iam_role_policy_attachment" "codebuild_policy_attach" {
+  role       = aws_iam_role.codebuild_service_role.name
+  policy_arn = aws_iam_policy.codebuild_policy.arn
 }
 
-resource "aws_iam_role_policy_attachment" "codepipeline_attach_s3_access" {
-  role       = aws_iam_role.codepipeline_service_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-}
-
-resource "aws_iam_role_policy_attachment" "codepipeline_attach_codebuild_access" {
-  role       = aws_iam_role.codepipeline_service_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess"
-}
-
-resource "aws_iam_role_policy_attachment" "codepipeline_attach_codedeploy_access" {
-  role       = aws_iam_role.codepipeline_service_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSCodeDeployFullAccess"
-}
-
-# -----------------------------
-# IAM ROLE: CodeDeploy
-# -----------------------------
+# IAM Role for CodeDeploy
 resource "aws_iam_role" "codedeploy_service_role" {
-  name = "CodeDeployServiceRole"
+  name = "codedeploy-service-role"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow"
+        Effect = "Allow",
         Principal = {
           Service = "codedeploy.amazonaws.com"
-        }
+        },
         Action = "sts:AssumeRole"
       }
     ]
   })
-
-  tags = {
-    Name        = "CodeDeployServiceRole"
-    Project     = "End-to-End CI/CD Pipeline"
-    ManagedBy   = "Terraform"
-    Environment = "Development"
-    Owner       = "Muzamil Yasin"
-    Department  = "DevSecOps"
-  }
 }
 
-resource "aws_iam_role_policy_attachment" "codedeploy_attach_service_role" {
+# Attach the AWS-managed policy for CodeDeploy
+resource "aws_iam_role_policy_attachment" "codedeploy_policy_attach" {
   role       = aws_iam_role.codedeploy_service_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
 }
 
-# -----------------------------
-# OUTPUTS
-# -----------------------------
-output "codebuild_role_arn" {
-  value = aws_iam_role.codebuild_service_role.arn
+# ===========================================================
+# IAM Role for CodePipeline
+# ===========================================================
+resource "aws_iam_role" "codepipeline_service_role" {
+  name = "codepipeline-service-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "codepipeline.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  tags = {
+    Name        = "codepipeline-service-role"
+    ManagedBy   = "Terraform"
+    Environment = "Development"
+  }
 }
 
-output "codepipeline_role_arn" {
-  value = aws_iam_role.codepipeline_service_role.arn
+# Inline policy to allow S3 and CodeDeploy actions
+resource "aws_iam_role_policy" "codepipeline_codedeploy_policy" {
+  name = "CodePipelineCodeDeployPolicy"
+  role = aws_iam_role.codepipeline_service_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "S3AccessForArtifacts",
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:GetBucketLocation",
+          "s3:ListBucket"
+        ],
+        Resource = [
+          "arn:aws:s3:::muzamil-project-artifacts-bucket-ca297b95",
+          "arn:aws:s3:::muzamil-project-artifacts-bucket-ca297b95/*"
+        ]
+      },
+      {
+        Sid    = "AllowCodePipelineServices",
+        Effect = "Allow",
+        Action = [
+          "codebuild:StartBuild",
+          "codebuild:BatchGetBuilds",
+          "codedeploy:CreateDeployment",
+          "codedeploy:GetDeployment",
+          "codedeploy:GetDeploymentConfig",
+          "codedeploy:RegisterApplicationRevision",
+          "codedeploy:GetApplicationRevision"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
 }
 
-output "codedeploy_role_arn" {
-  value = aws_iam_role.codedeploy_service_role.arn
+# Attach AWS managed policy for general CodePipeline operations
+resource "aws_iam_role_policy_attachment" "codepipeline_attach_managed_policy" {
+  role       = aws_iam_role.codepipeline_service_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess"
+}
+
+# IAM Instance Profile for EC2
+resource "aws_iam_instance_profile" "codedeploy_instance_profile" {
+  name = "codedeploy-instance-profile"
+  role = aws_iam_role.codedeploy_service_role.name
+}
+
+# -----------------------------------------------------------
+# Inline policy for codedeployrole to allow ECR access
+# -----------------------------------------------------------
+resource "aws_iam_role_policy" "codedeploy_ecr_policy" {
+  name = "CodeDeployECRPolicy"
+  role = "codedeployrole" # use the name of your instance profile role
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
 }

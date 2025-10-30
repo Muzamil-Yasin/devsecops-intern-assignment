@@ -77,7 +77,7 @@ resource "aws_codepipeline" "application_pipeline" {
   # ------------------------
   # Pipeline Tags
   tags = {
-    Name           = "End-to-End CI/CD Pipeline"
+    Name           = "End-to-End-CI-CD-Pipeline"
     Project        = "End-to-End CI/CD Pipeline"
     Environment    = "Development"
     ManagedBy      = "Terraform"
@@ -85,4 +85,12 @@ resource "aws_codepipeline" "application_pipeline" {
     Department     = "DevSecOps"
     Infrastructure = "Automated"
   }
+}
+
+# ===========================================================
+# Output for CodePipeline
+# ===========================================================
+
+output "codepipeline_name" {
+  value = aws_codepipeline.application_pipeline.name
 }
