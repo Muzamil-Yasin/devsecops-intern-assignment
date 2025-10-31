@@ -53,33 +53,33 @@ resource "aws_instance" "app_server" {
 
   user_data = <<-EOF
               #!/bin/bash
+              set -e
               yum update -y
-              yum install -y ruby wget amazon-linux-extras
-              
-              # Install Docker
+              yum install -y ruby wget awscli amazon-linux-extras
+
+              # Enable and install Docker
               amazon-linux-extras enable docker
               yum install -y docker
               systemctl start docker
               systemctl enable docker
               usermod -aG docker ec2-user
-              
+
+              # Configure AWS CLI region globally
+              echo "export AWS_DEFAULT_REGION=us-east-1" >> /etc/profile
+              export AWS_DEFAULT_REGION=us-east-1
+
               # Install CodeDeploy agent
               cd /home/ec2-user
               wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
               chmod +x ./install
               ./install auto
-              systemctl start codedeploy-agent
               systemctl enable codedeploy-agent
-              
-              # Configure AWS CLI region for scripts
-              mkdir -p /home/ec2-user/.aws
-              echo "[default]" > /home/ec2-user/.aws/config
-              echo "region = us-east-1" >> /home/ec2-user/.aws/config
-              chown -R ec2-user:ec2-user /home/ec2-user/.aws
+              systemctl start codedeploy-agent
+
+              echo "Setup complete: Docker + CodeDeploy agent running successfully."
               EOF
 
-  # Ensure EC2 waits until it is ready for deployment
   provisioner "local-exec" {
-    command = "echo 'EC2 instance created, Docker installed, and CodeDeploy agent ready.'"
+    command = "echo ' EC2 instance created, Docker & CodeDeploy agent installed successfully.'"
   }
 }
