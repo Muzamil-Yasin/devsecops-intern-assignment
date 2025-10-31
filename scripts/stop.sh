@@ -19,4 +19,3 @@ CONTAINER_NAME=$(basename "$REPOSITORY_URI")
 echo "Stopping and removing old container: $CONTAINER_NAME..."
 docker stop "$CONTAINER_NAME" || true
 docker rm "$CONTAINER_NAME" || true
-#testing for pipeline
