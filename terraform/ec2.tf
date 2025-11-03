@@ -38,7 +38,8 @@ resource "aws_security_group" "app_sg" {
 # EC2 Instance for App Server
 # ===========================================================
 resource "aws_instance" "app_server" {
-  ami                    = "ami-0c02fb55956c7d316" # Amazon Linux 2 AMI (us-east-1)
+  # Amazon Linux 2 AMI (HVM), SSD Volume Type in us-east-1
+  ami                    = "ami-0b2f6494ff0b07a0e"
   instance_type          = "t2.micro"
   key_name               = "Security" # Must exist in AWS
   vpc_security_group_ids = [aws_security_group.app_sg.id]
@@ -48,7 +49,7 @@ resource "aws_instance" "app_server" {
 
   tags = {
     Name        = "AppServer"
-    Environment = "Development" # Must match CodeDeploy EC2 tag filter
+    Environment = "Development"
   }
 
   user_data = <<-EOF
@@ -57,7 +58,12 @@ resource "aws_instance" "app_server" {
 
               # Update system and install dependencies
               yum update -y
-              yum install -y ruby wget awscli
+              yum install -y wget awscli
+
+              # Install Ruby 3.2 using Amazon Linux Extras
+              amazon-linux-extras enable ruby3.2
+              yum install -y ruby ruby-devel
+              ruby -v
 
               # Enable and install Docker
               amazon-linux-extras enable docker
@@ -74,14 +80,14 @@ resource "aws_instance" "app_server" {
               cd /home/ec2-user
               wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install
               chmod +x ./install
-              sudo ./install auto
-              sudo systemctl enable codedeploy-agent
-              sudo systemctl start codedeploy-agent
+              ./install auto
+              systemctl enable codedeploy-agent
+              systemctl start codedeploy-agent
 
-              echo "Setup complete: Docker + CodeDeploy agent running successfully."
+              echo "Setup complete: Ruby, Docker, and CodeDeploy agent installed successfully."
               EOF
 
   provisioner "local-exec" {
-    command = "echo \"EC2 instance created, Docker & CodeDeploy agent installed successfully.\""
+    command = "echo \"EC2 instance created, Ruby + Docker + CodeDeploy agent installed successfully.\""
   }
 }
