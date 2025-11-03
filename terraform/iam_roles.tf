@@ -144,8 +144,8 @@ resource "aws_iam_role_policy" "codepipeline_codedeploy_policy" {
           "s3:ListBucket"
         ],
         Resource = [
-          "arn:aws:s3:::muzamil-project-artifacts-bucket-ca297b95",
-          "arn:aws:s3:::muzamil-project-artifacts-bucket-ca297b95/*"
+          "arn:aws:s3:::muzamil-project-artifacts-bucket-0e8a6353",
+          "arn:aws:s3:::muzamil-project-artifacts-bucket-0e8a6353/*"
         ]
       },
       {
