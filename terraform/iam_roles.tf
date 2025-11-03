@@ -183,7 +183,7 @@ resource "aws_iam_instance_profile" "codedeploy_instance_profile" {
 # -----------------------------------------------------------
 resource "aws_iam_role_policy" "codedeploy_ecr_policy" {
   name = "CodeDeployECRPolicy"
-  role = "codedeployrole" # use the name of your instance profile role
+  role = aws_iam_role.codedeploy_service_role.name
 
   policy = jsonencode({
     Version = "2012-10-17",
