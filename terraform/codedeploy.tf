@@ -47,8 +47,8 @@ resource "aws_codedeploy_deployment_group" "ec2_deployment_group" {
     events  = ["DEPLOYMENT_FAILURE"]
   }
 
-  # Optional: wait for EC2 instances to be in a healthy state before deployment
-
+  # Ensure ECR repository exists before deployment group is created
+  depends_on = [aws_ecr_repository.app_repo]
 
   tags = {
     Name        = "EC2DeploymentGroup"
