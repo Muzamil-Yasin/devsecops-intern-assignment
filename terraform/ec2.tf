@@ -35,17 +35,14 @@ resource "aws_security_group" "app_sg" {
 }
 
 # ===========================================================
-# EC2 Instance for App Server
+# EC2 Instance for App Server (Amazon Linux 2023)
 # ===========================================================
 resource "aws_instance" "app_server" {
-  # Amazon Linux 2 AMI (HVM), SSD Volume Type in us-east-1
-  ami                    = "ami-0b2f6494ff0b07a0e"
+  ami                    = "ami-080c353f4798a202f" # Amazon Linux 2023 x86_64 UEFI
   instance_type          = "t2.micro"
-  key_name               = "Security" # Must exist in AWS
+  key_name               = "Security"
   vpc_security_group_ids = [aws_security_group.app_sg.id]
-
-  # Attach IAM instance profile for CodeDeploy
-  iam_instance_profile = aws_iam_instance_profile.codedeploy_instance_profile.name
+  iam_instance_profile   = aws_iam_instance_profile.codedeploy_instance_profile.name
 
   tags = {
     Name        = "AppServer"
@@ -56,21 +53,21 @@ resource "aws_instance" "app_server" {
               #!/bin/bash
               set -e
 
-              # Update system and install dependencies
-              yum update -y
-              yum install -y wget awscli
+              # Update system
+              sudo dnf update -y
 
-              # Install Ruby 3.2 using Amazon Linux Extras
-              amazon-linux-extras enable ruby3.2
-              yum install -y ruby ruby-devel
+              # Install basic dependencies
+              sudo dnf install -y wget awscli
+
+              # Install Ruby 3.2
+              sudo dnf install -y ruby ruby-devel
               ruby -v
 
-              # Enable and install Docker
-              amazon-linux-extras enable docker
-              yum install -y docker
-              systemctl start docker
-              systemctl enable docker
-              usermod -aG docker ec2-user
+              # Install Docker
+              sudo dnf install -y docker
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              sudo usermod -aG docker ec2-user
 
               # Configure AWS CLI region globally
               echo "export AWS_DEFAULT_REGION=us-east-1" >> /etc/profile
@@ -80,14 +77,14 @@ resource "aws_instance" "app_server" {
               cd /home/ec2-user
               wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install
               chmod +x ./install
-              ./install auto
-              systemctl enable codedeploy-agent
-              systemctl start codedeploy-agent
+              sudo ./install auto
+              sudo systemctl enable codedeploy-agent
+              sudo systemctl start codedeploy-agent
 
               echo "Setup complete: Ruby, Docker, and CodeDeploy agent installed successfully."
               EOF
 
   provisioner "local-exec" {
-    command = "echo \"EC2 instance created, Ruby + Docker + CodeDeploy agent installed successfully.\""
+    command = "echo \"EC2 instance created and all required software installed successfully.\""
   }
 }
