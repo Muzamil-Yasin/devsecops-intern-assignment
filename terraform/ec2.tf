@@ -54,8 +54,10 @@ resource "aws_instance" "app_server" {
   user_data = <<-EOF
               #!/bin/bash
               set -e
+
+              # Update system and install dependencies
               yum update -y
-              yum install -y ruby wget awscli amazon-linux-extras
+              yum install -y ruby wget awscli
 
               # Enable and install Docker
               amazon-linux-extras enable docker
@@ -70,16 +72,16 @@ resource "aws_instance" "app_server" {
 
               # Install CodeDeploy agent
               cd /home/ec2-user
-              wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+              wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install
               chmod +x ./install
-              ./install auto
-              systemctl enable codedeploy-agent
-              systemctl start codedeploy-agent
+              sudo ./install auto
+              sudo systemctl enable codedeploy-agent
+              sudo systemctl start codedeploy-agent
 
               echo "Setup complete: Docker + CodeDeploy agent running successfully."
               EOF
 
   provisioner "local-exec" {
-    command = "echo ' EC2 instance created, Docker & CodeDeploy agent installed successfully.'"
+    command = "echo 'EC2 instance created, Docker & CodeDeploy agent installed successfully.'"
   }
 }
