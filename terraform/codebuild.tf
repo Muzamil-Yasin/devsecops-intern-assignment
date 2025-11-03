@@ -21,7 +21,7 @@ resource "aws_codebuild_project" "cicd_build_project" {
 
     environment_variable {
       name  = "ECR_REPO_URI"
-      value = "052869605945.dkr.ecr.us-east-1.amazonaws.com/my-repo" # actual repo URI
+      value = "052869605945.dkr.ecr.us-east-1.amazonaws.com/devsecops-intern-assignment" 
     }
 
     environment_variable {
