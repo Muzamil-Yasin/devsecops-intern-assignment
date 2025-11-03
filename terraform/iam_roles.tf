@@ -1,6 +1,6 @@
-
-
+# ===========================================================
 # IAM Role for CodeBuild
+# ===========================================================
 resource "aws_iam_role" "codebuild_service_role" {
   name = "codebuild-service-role"
 
@@ -76,7 +76,9 @@ resource "aws_iam_role_policy_attachment" "codebuild_policy_attach" {
   policy_arn = aws_iam_policy.codebuild_policy.arn
 }
 
+# ===========================================================
 # IAM Role for CodeDeploy
+# ===========================================================
 resource "aws_iam_role" "codedeploy_service_role" {
   name = "codedeploy-service-role"
 
@@ -86,7 +88,10 @@ resource "aws_iam_role" "codedeploy_service_role" {
       {
         Effect = "Allow",
         Principal = {
-          Service = "codedeploy.amazonaws.com"
+          Service = [
+            "codedeploy.amazonaws.com",
+            "ec2.amazonaws.com" # Added EC2 to allow instance profile to work
+          ]
         },
         Action = "sts:AssumeRole"
       }
@@ -98,6 +103,34 @@ resource "aws_iam_role" "codedeploy_service_role" {
 resource "aws_iam_role_policy_attachment" "codedeploy_policy_attach" {
   role       = aws_iam_role.codedeploy_service_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+}
+
+# Inline policy for ECR access (for CodeDeploy)
+resource "aws_iam_role_policy" "codedeploy_ecr_policy" {
+  name = "CodeDeployECRPolicy"
+  role = aws_iam_role.codedeploy_service_role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# IAM Instance Profile for EC2
+resource "aws_iam_instance_profile" "codedeploy_instance_profile" {
+  name = "codedeploy-instance-profile"
+  role = aws_iam_role.codedeploy_service_role.name
 }
 
 # ===========================================================
@@ -170,34 +203,4 @@ resource "aws_iam_role_policy" "codepipeline_codedeploy_policy" {
 resource "aws_iam_role_policy_attachment" "codepipeline_attach_managed_policy" {
   role       = aws_iam_role.codepipeline_service_role.name
   policy_arn = "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess"
-}
-
-# IAM Instance Profile for EC2
-resource "aws_iam_instance_profile" "codedeploy_instance_profile" {
-  name = "codedeploy-instance-profile"
-  role = aws_iam_role.codedeploy_service_role.name
-}
-
-# -----------------------------------------------------------
-# Inline policy for codedeployrole to allow ECR access
-# -----------------------------------------------------------
-resource "aws_iam_role_policy" "codedeploy_ecr_policy" {
-  name = "CodeDeployECRPolicy"
-  role = aws_iam_role.codedeploy_service_role.name
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage"
-        ],
-        Resource = "*"
-      }
-    ]
-  })
 }
