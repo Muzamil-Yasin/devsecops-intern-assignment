@@ -82,6 +82,6 @@ resource "aws_instance" "app_server" {
               EOF
 
   provisioner "local-exec" {
-    command = "echo 'EC2 instance created, Docker & CodeDeploy agent installed successfully.'"
+    command = "echo \"EC2 instance created, Docker & CodeDeploy agent installed successfully.\""
   }
 }
