@@ -34,7 +34,6 @@ resource "aws_codebuild_project" "cicd_build_project" {
     }
   }
 
-  timeout_in_minutes = 30
 
   tags = {
     Name        = "CI-CD-Application-Build"
